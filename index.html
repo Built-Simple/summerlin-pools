@@ -604,23 +604,76 @@
             });
         });
 
-        // Form submission handler (placeholder - will connect to Google Sheets)
+        // Form submission handler - Connects to Google Sheets!
         document.getElementById('quote-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            // Show loading message
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
             
             // Collect form data
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
             
-            // For now, just log and show success
-            console.log('Form submission:', data);
+            // IMPORTANT: Replace this with YOUR Google Apps Script URL after deployment!
+            // You'll get this URL when you deploy the Google Apps Script
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzXQXBpwDCaRLxqh_VbDEkjEMVSiOUNhRpllZgsoE2P_VHKBHnAKpJInR4hxbX_Hq8cug/exec';
+            // Example: 'https://script.google.com/macros/s/AKfycbw.../exec'
             
-            // You'll connect this to Google Sheets via Apps Script
-            alert('Thank you! We\'ll contact you within 1 hour with your quote.');
-            
-            // Reset form
-            this.reset();
+            // Send to Google Sheets
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // Important for Google Apps Script
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                // Success! (no-cors means we don't get response data)
+                alert('Thank you! We\'ll call you within 1 hour with your quote.');
+                
+                // Reset form
+                this.reset();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                // Track conversion if you have Google Analytics
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'form_submit', {
+                        'event_category': 'Lead',
+                        'event_label': 'Quote Request'
+                    });
+                }
+            })
+            .catch(error => {
+                // Error handling
+                console.error('Error:', error);
+                alert('Thank you for your interest! Please call us at (702) 518-8813 for immediate assistance.');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            });
         });
+        
+        // Backup: Email form data if script fails
+        function emailFormBackup(data) {
+            const subject = 'Pool Service Quote Request';
+            const body = `
+Name: ${data.name}
+Phone: ${data.phone}
+Email: ${data.email || 'Not provided'}
+Address: ${data.address}
+Service: ${data.service}
+Pool Size: ${data['pool-size'] || 'Not specified'}
+Message: ${data.message || 'No message'}
+            `;
+            
+            // This opens their email client as backup
+            window.location.href = `mailto:admin@summerlinpools.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
 
         // Add Google Analytics (replace UA-XXXXX with your ID)
         // Will add this when you have the tracking ID
