@@ -98,13 +98,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 0;
+            padding: 0.5rem 0;
         }
         
         .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--primary);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo img {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
         }
         
         .nav-links {
@@ -378,6 +384,17 @@
             padding: 2rem 0;
         }
         
+        .footer-logo {
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-logo img {
+            height: 40px;
+            width: auto;
+            opacity: 0.9;
+        }
+        
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .nav-links {
@@ -403,7 +420,9 @@
     <!-- Header -->
     <header>
         <nav class="container">
-            <div class="logo">🏊 Summerlin Pools</div>
+            <a href="/" class="logo">
+                <img src="logo.jpg" alt="Summerlin Pools - Professional Pool Cleaning Service" />
+            </a>
             <ul class="nav-links">
                 <li><a href="#services">Services</a></li>
                 <li><a href="#areas">Service Areas</a></li>
@@ -588,6 +607,9 @@
     <!-- Footer -->
     <footer>
         <div class="container">
+            <div class="footer-logo">
+                <img src="logo.jpg" alt="Summerlin Pools" />
+            </div>
             <p>&copy; 2024 Summerlin Pools. All rights reserved. | Licensed & Insured | ROC# PENDING</p>
             <p>Serving Summerlin, Las Vegas, NV | admin@summerlinpools.com</p>
         </div>
